@@ -1,0 +1,166 @@
+# Include necessary libraries
+include "stdio.h"
+include "stdlib.h"
+
+# Define the structure treeNode
+struct treeNode
+    data: integer
+    left: treeNode pointer
+    right: treeNode pointer
+end struct
+
+# Function to create a new treeNode
+function createNode(data)
+    # Allocate memory for a new treeNode
+    newNode = allocate memory for a treeNode
+
+    # Set the attributes of the new treeNode
+    newNode.data = data
+    newNode.left = NULL
+    newNode.right = NULL
+
+    # Return the newly created treeNode
+    return newNode
+end function
+
+# Function to insert a new node into a binary tree
+function insert(root, data)
+    if root is NULL then
+        # Create a new node and return it
+        return createNode(data)
+    end if
+
+    if data < root.data then
+        # Recursively insert the new node into the left subtree
+        root.left = insert(root.left, data)
+    else if data > root.data then
+        # Recursively insert the new node into the right subtree
+        root.right = insert(root.right, data)
+    end if
+
+    return root
+end function
+
+# Function to find the node with the minimum value in a binary tree
+function minValueNode(node)
+    current = node
+
+    while current is not NULL and current.left is not NULL do
+        current = current.left
+    end while
+
+    return current
+end function
+
+# Function to delete a node from a binary tree
+function deleteNode(root, data)
+    if root is NULL then
+        # Base case: if the tree or subtree is empty, return NULL
+        return root
+    end if
+
+    if data < root.data then
+        # Recursively delete the node from the left subtree
+        root.left = deleteNode(root.left, data)
+    else if data > root.data then
+        # Recursively delete the node from the right subtree
+        root.right = deleteNode(root.right, data)
+    else
+        if root.left is NULL then
+            # If the node has no left child, replace it with its right child
+            temp = root.right
+            free(root)
+            return temp
+        else if root.right is NULL then
+            # If the node has no right child, replace it with its left child
+            temp = root.left
+            free(root)
+            return temp
+        end if
+
+        # If the node has both left and right children
+        # Find the inorder successor (minimum value node) from the right subtree
+        temp = minValueNode(root.right)
+        root.data = temp.data
+
+        # Delete the inorder successor from the right subtree
+        root.right = deleteNode(root.right, temp.data)
+    end if
+
+    return root
+end function
+
+# Function to perform preorder traversal of a binary tree
+function preorder(root)
+    if root is not NULL then
+        print root.data
+        preorder(root.left)
+        preorder(root.right)
+    end if
+end function
+
+# Function to perform inorder traversal of a binary tree
+function inorder(root)
+    if root is not NULL then
+        inorder(root.left)
+        print root.data
+        inorder(root.right)
+    end if
+end function
+
+# Function to perform postorder traversal of a binary tree
+function postorder(root)
+    if root is not NULL then
+        postorder(root.left)
+        postorder(root.right)
+        print root.data
+    end if
+end function
+
+# Main function for binary tree operations
+function main()
+    root = NULL
+    menu, data, deleteData
+
+    while true do
+        print "1. Insertion"
+        print "2. Deletion"
+        print "3. Traversal"
+        print "4. Exit"
+        print "Choose: "
+        read menu
+
+        switch menu do
+            case 1:
+                print "Insert: "
+                read data
+                root = insert(root, data)
+                system_pause()
+                system_clear()
+                break
+            case 2:
+                print "Delete: "
+                read deleteData
+                root = deleteNode(root, deleteData)
+                system_pause()
+                system_clear()
+                break
+            case 3:
+                print "Preorder: "
+                preorder(root)
+                print "\n"
+                print "Inorder: "
+                inorder(root)
+                print "\n"
+                print "Postorder: "
+                postorder(root)
+                print "\n"
+                system_pause()
+                system_clear()
+                break
+            case 4:
+                print "Thank you\n"
+                exit(0)
+        end switch
+    end while
+end function

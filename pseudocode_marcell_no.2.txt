@@ -1,0 +1,192 @@
+include "stdio.h"
+include "stdlib.h"
+
+Declare enum Color{ //Define the enumeration Color
+    RED,
+    BLACK
+}
+
+Declare struct Node{ //Define the structure Node
+    int data
+    enum Color color
+    struct Node* parent
+    struct Node* left
+    struct Node* right
+}
+
+//Declare and initialize the root node
+Declare Node* root = NULL
+
+function createNode(data): //Function to create a new node
+    //Allocate memory for a new node
+    Declare newNode = allocate memory for a Node
+
+    //Set the attributes of the new node
+    newNode.data = data
+    newNode.color = RED
+    newNode.parent = NULL
+    newNode.left = NULL
+    newNode.right = NULL
+
+    //Return the newly created node
+    return newNode
+
+function swapColors(a, b): //Function to swap two color values
+    # Store the value of a in a temporary variable
+    Declare temp = a
+
+    # Assign the value of b to a
+    a = b
+
+    # Assign the value of the temporary variable to b
+    b = temp
+    end Function
+
+function bstInsert(root, newNode): //Function to insert a node into a binary search tree
+    if root is NULL:
+        //The tree is empty, so the new node becomes the root
+        return newNode
+
+    if newNode.data < root.data:
+        //Recursively insert the new node into the left subtree
+        root.left = bstInsert(root.left, newNode)
+        root.left.parent = root
+    else if newNode.data > root.data:
+        //Recursively insert the new node into the right subtree
+        root.right = bstInsert(root.right, newNode)
+        root.right.parent = root
+
+    return root
+
+function fixViolation(root, newNode): //Function to fix violations in a red-black tree after insertion
+    Declare parent = NULL
+    Declare grandparent = NULL
+
+    while newNode is not root and newNode.color is not BLACK and newNode.parent.color is RED:
+        parent = newNode.parent
+        grandparent = newNode.parent.parent
+
+        if parent is grandparent.left:
+            Declare uncle = grandparent.right
+
+            if uncle is not NULL and uncle.color is RED:
+                grandparent.color = RED
+                parent.color = BLACK
+                uncle.color = BLACK
+                newNode = grandparent
+            else:
+                if newNode is parent.right:
+                    newNode = parent
+                    leftRotate(root, newNode)
+
+                parent = newNode.parent
+                grandparent = parent.parent
+                parent.color = BLACK
+                grandparent.color = RED
+                rightRotate(root, grandparent)
+        else:
+            Declare uncle = grandparent.left
+
+            if uncle is not NULL and uncle.color is RED:
+                grandparent.color = RED
+                parent.color = BLACK
+                uncle.color = BLACK
+                newNode = grandparent
+            else:
+                if newNode is parent.left:
+                    newNode = parent
+                    rightRotate(root, newNode)
+
+                parent = newNode.parent
+                grandparent = parent.parent
+                parent.color = BLACK
+                grandparent.color = RED
+                leftRotate(root, grandparent)
+
+    root.color = BLACK
+    end Function
+
+function leftRotate(root, x): //Function to perform a left rotation in a binary tree
+    Declare y = x.right
+    x.right = y.left
+
+    if x.right is not NULL:
+        x.right.parent = x
+
+    y.parent = x.parent
+
+    if x.parent is NULL:
+        root = y
+    else if x is x.parent.left:
+        x.parent.left = y
+    else:
+        x.parent.right = y
+
+    y.left = x
+    x.parent = y
+    end Function
+
+function rightRotate(root, y): //Function to perform a right rotation in a binary tree
+    Declare x = y.left
+    y.left = x.right
+
+    if y.left is not NULL:
+        y.left.parent = y
+
+    x.parent = y.parent
+
+    if y.parent is NULL:
+        root = x
+    else if y is y.parent.left:
+        y.parent.left = x
+    else:
+        y.parent.right = x
+
+    x.right = y
+    y.parent = x
+    end Function
+
+function inorderTraversal(root): //Function to perform inorder traversal of a binary tree
+    if root is not NULL:
+        inorderTraversal(root.left)
+        print root.data
+        inorderTraversal(root.right)
+    end Function
+
+function main(): //Main function
+    # Declare variables
+    Declare menu = 0
+
+    # Main loop
+    while true:
+        print "1. Insertion"
+        print "2. Inorder Traversal"
+        print "3. Exit"
+        print ">> "
+        read menu
+
+        # Process user input
+        switch menu:
+            case 1:
+                Array = [41, 22, 5, 51, 48, 29, 18, 21, 45, 3]
+                Length = length of Array
+
+                for i from 0 to Length-1:
+                    newNode = createNode(Array[i])
+                    root = bstInsert(root, newNode)
+                    fixViolation(root, newNode)
+
+                print "[41, 22, 5, 51, 48, 29, 18, 21, 45, 3]"
+                print "Inserted"
+                break
+
+            case 2:
+                print "Inorder Traversal: "
+                inorderTraversal(root)
+                print "\n"
+                break
+
+            case 3:
+                exit program
+
+    return 0
